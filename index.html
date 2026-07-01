@@ -1,64 +1,47 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <title>Health Atlas</title>
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-    <style>
-        html,body{
-            margin:0;
-            padding:0;
-            height:100%;
-            font-family:Tahoma;
-        }
-
-        #header{
-            height:55px;
-            background:#0B6E4F;
-            color:white;
-            line-height:55px;
-            padding-left:20px;
-            font-size:22px;
-            font-weight:bold;
-        }
-
-        #map{
-            width:100%;
-            height:calc(100vh - 55px);
-        }
-    </style>
-
-</head>
-
-<body>
-
-<div id="header">
-🏥 Health Atlas - PCU RongSor
-</div>
-
-<div id="map"></div>
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
-var map = L.map('map').setView([18.7904,98.9847],13);
+const map = L.map('map').setView([18.1424,100.1327],15);
 
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 {
-    maxZoom:19,
-    attribution:'© OpenStreetMap'
-}
-).addTo(map);
+    attribution:'© OpenStreetMap',
+    maxZoom:20
+}).addTo(map);
 
-L.marker([18.7904,98.9847])
-.addTo(map)
-.bindPopup("<b>เริ่มต้นสร้าง Health Atlas</b>");
+fetch("HOME.txt")
+.then(r=>r.text())
+.then(text=>{
+
+    const rows=text.trim().split("\n");
+
+    const header=rows[0].split("|");
+
+    const latIndex=header.indexOf("LATITUDE");
+    const lonIndex=header.indexOf("LONGITUDE");
+    const houseIndex=header.indexOf("HOUSE");
+    const houseIdIndex=header.indexOf("HOUSE_ID");
+
+    for(let i=1;i<rows.length;i++){
+
+        const c=rows[i].split("|");
+
+        const lat=parseFloat(c[latIndex]);
+        const lon=parseFloat(c[lonIndex]);
+
+        if(isNaN(lat)||isNaN(lon)) continue;
+
+        L.marker([lat,lon])
+        .addTo(map)
+        .bindPopup(
+            "<b>บ้านเลขที่ :</b> "+c[houseIndex]+"<br>"+
+            "<b>HOUSE_ID :</b> "+c[houseIdIndex]
+        );
+
+    }
+
+});
 
 </script>
-
-</body>
-</html>
