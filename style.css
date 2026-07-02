@@ -31,11 +31,19 @@ body{
 
 }
 
-#sidebar h2{
+   #sidebar h2{
 
     color:#0b6efd;
 
     margin-bottom:20px;
+
+    font-size:28px;
+
+    line-height:1.4;
+
+    font-weight:bold;
+
+}
 
 }
 
